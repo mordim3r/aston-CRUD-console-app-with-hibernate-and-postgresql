@@ -1,0 +1,31 @@
+<hibernate-configuration xmlns="http://www.hibernate.org/xsd/hibernate-configuration">
+    <session-factory>
+        <property name="hibernate.connection.driver_class">
+            org.postgresql.Driver
+        </property>
+        <property name="hibernate.connection.url">
+            jdbc:postgresql://localhost:5432/user_service
+        </property>
+        <property name="hibernate.connection.username">
+            postgres
+        </property>
+        <property name="hibernate.connection.password">
+            2391
+        </property>
+        <!--при запуске создать таблицу или дополнить ее, если она существует по @Entity-->
+        <property name="hibernate.hbm2ddl.auto">
+            update
+        </property>
+        <!--выводить запросы hibernate в консоль-->
+        <property name="hibernate.show_sql">
+            true
+        </property>
+        <!--улучшение читаемости sql-->
+        <property name="hibernate.format_sql">
+            true
+        </property>
+        <!--класс User использовать как описание таблицы-->
+        <mapping class="User"/>
+
+    </session-factory>
+</hibernate-configuration>
