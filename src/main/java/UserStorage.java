@@ -80,11 +80,21 @@ public class UserStorage implements UserRepository {
         if (id <= 0) {
             throw new IllegalArgumentException("Для удаления нужен корректный id");
         }
+        Transaction transaction =null;
         try (Session session = factory.openSession()){
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             User existingUser = session.find(User.class, id);
-
-
+            if (existingUser == null) {
+                transaction.rollback();
+                throw new IllegalArgumentException("Пользователь с таким id не найден");
+            }
+            session.remove(existingUser);
+            transaction.commit();
+        }catch (RuntimeException e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
         }
 
     }
