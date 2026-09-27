@@ -8,19 +8,20 @@ import java.util.List;
 
 public class UserStorage implements UserRepository {
     private final SessionFactory factory = HibernateUtil.getSessionFactory();
+
     @Override
     public void saveUser(User user) {
-        if (user==null){
+        if (user == null) {
             throw new IllegalArgumentException("User не может быть null");
         }
-        Transaction transaction =null;
-        try (Session session = factory.openSession()){
+        Transaction transaction = null;
+        try (Session session = factory.openSession()) {
             transaction = session.beginTransaction();
             session.persist(user);
             transaction.commit();
 
-        }catch (RuntimeException e){
-            if (transaction !=null && transaction.isActive()){
+        } catch (RuntimeException e) {
+            if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
             throw e;
@@ -30,7 +31,7 @@ public class UserStorage implements UserRepository {
 
     @Override
     public User findById(int id) {
-        try (Session session = factory.openSession()){
+        try (Session session = factory.openSession()) {
             return session.find(User.class, id);
 
         }
@@ -39,26 +40,26 @@ public class UserStorage implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        try ( Session session = factory.openSession()){
+        try (Session session = factory.openSession()) {
             String hql = "from User";
-            SelectionQuery <User> query = session.createSelectionQuery(hql,User.class);
+            SelectionQuery<User> query = session.createSelectionQuery(hql, User.class);
             return query.getResultList();
         }
     }
 
     @Override
     public void updateUser(User user) {
-        if (user==null){
+        if (user == null) {
             throw new IllegalArgumentException("User не может быть null");
         }
-        if (user.getId()<=0){
+        if (user.getId() <= 0) {
             throw new IllegalArgumentException("Для изменения записи нужен корректный id");
         }
-        Transaction transaction =null;
-        try(Session session = factory.openSession()) {
+        Transaction transaction = null;
+        try (Session session = factory.openSession()) {
             transaction = session.beginTransaction();
             User existingUser = session.find(User.class, user.getId());
-            if (existingUser==null){
+            if (existingUser == null) {
                 transaction.rollback();
                 throw new IllegalArgumentException("Пользователь с таким id не найден");
             }
@@ -66,8 +67,8 @@ public class UserStorage implements UserRepository {
             existingUser.setEmail(user.getEmail());
             existingUser.setAge(user.getAge());
             transaction.commit();
-        } catch (RuntimeException e){
-            if (transaction != null && transaction.isActive()){
+        } catch (RuntimeException e) {
+            if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
             throw e;
@@ -80,8 +81,8 @@ public class UserStorage implements UserRepository {
         if (id <= 0) {
             throw new IllegalArgumentException("Для удаления нужен корректный id");
         }
-        Transaction transaction =null;
-        try (Session session = factory.openSession()){
+        Transaction transaction = null;
+        try (Session session = factory.openSession()) {
             transaction = session.beginTransaction();
             User existingUser = session.find(User.class, id);
             if (existingUser == null) {
@@ -90,7 +91,7 @@ public class UserStorage implements UserRepository {
             }
             session.remove(existingUser);
             transaction.commit();
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }

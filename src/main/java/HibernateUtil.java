@@ -2,18 +2,21 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
-    private  static final SessionFactory sessionFactory;
+    private static final SessionFactory sessionFactory;
+
     static {
         sessionFactory = new Configuration()
                 .configure()
                 .buildSessionFactory();
 
     }
-    public static SessionFactory getSessionFactory(){
+
+    public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
-    public static void shutdown(){
-        if (sessionFactory!=null){
+
+    public static void shutdown() {
+        if (sessionFactory != null) {
             sessionFactory.close();
         }
     }

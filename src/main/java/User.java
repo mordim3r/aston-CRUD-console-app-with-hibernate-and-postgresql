@@ -1,6 +1,9 @@
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
+
 //@Entity означает что один объект User будет соответствовать одной строке в таблице
 //@Table(name="user") связывает класс User и таблицу users
 @Entity
@@ -14,9 +17,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name="name", nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
-    @Column(name="email", nullable = false, length = 100, unique = true)
+    @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
     @Column(name = "age")
     private int age;
