@@ -5,13 +5,12 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 
-
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-
-        UserStorage userStorage = new UserStorage();
+        UserRepository userRepository = new UserStorage();
+        UserService userService = new UserService(userRepository);
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -41,9 +40,8 @@ public class Main {
 
                         try {
                             int age = Integer.parseInt(scanner.nextLine());
-                            User user = new User(name, email, age);
-                            userStorage.saveUser(user);
-                            System.out.println("Пользователь добавлен: " + user);
+                            userService.addUser(name, email, age);
+                            System.out.println("Пользователь добавлен");
                         } catch (NumberFormatException e) {
                             System.out.println("Возраст должен быть целым числом");
                         } catch (IllegalArgumentException e) {
@@ -55,7 +53,7 @@ public class Main {
 
                         try {
                             int id = Integer.parseInt(scanner.nextLine());
-                            User user = userStorage.findById(id);
+                            User user = userService.getUserById(id);
 
                             if (user == null) {
                                 System.out.println("Пользователь не найден");
@@ -64,22 +62,18 @@ public class Main {
                             }
                         } catch (NumberFormatException e) {
                             System.out.println("ID должен быть целым числом");
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
                         }
                     }
                     case "3" -> {
-                        List<User> users = userStorage.findAll();
+                        List<User> users = userService.getAllUsers();
                         users.forEach(System.out::println);
                     }
                     case "4" -> {
                         try {
                             System.out.print("Введите ID пользователя: ");
                             int id = Integer.parseInt(scanner.nextLine());
-
-                            User user = userStorage.findById(id);
-                            if (user == null) {
-                                System.out.println("Пользователь с таким id не найден");
-                                break;
-                            }
 
                             System.out.print("Новое имя: ");
                             String name = scanner.nextLine();
@@ -90,11 +84,7 @@ public class Main {
                             System.out.print("Новый возраст: ");
                             int age = Integer.parseInt(scanner.nextLine());
 
-                            user.setName(name);
-                            user.setEmail(email);
-                            user.setAge(age);
-
-                            userStorage.updateUser(user);
+                            userService.updateUser(id, name, email, age);
                             System.out.println("Пользователь обновлён");
                         } catch (NumberFormatException e) {
                             System.out.println("ID и возраст должны быть целыми числами");
@@ -106,7 +96,7 @@ public class Main {
                         System.out.println("Введите id пользователя для удаления: ");
                         try {
                             int id = Integer.parseInt(scanner.nextLine());
-                            userStorage.deleteUser(id);
+                            userService.deleteUser(id);
                             System.out.println("Пользователь удален");
                         } catch (NumberFormatException e) {
                             System.out.println("Ошибка! id должен быть целым числом");
@@ -121,7 +111,6 @@ public class Main {
                 logger.error("Ошибка при выполнении пункта меню {}", choice, e);
             }
         }
-        //User user = new User("Andrew3", "andrew2@gmail.com", 25);
         HibernateUtil.shutdown();
     }
 }
