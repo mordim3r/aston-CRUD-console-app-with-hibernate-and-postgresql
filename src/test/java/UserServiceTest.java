@@ -2,6 +2,7 @@
 //verifyNoInteractions(userRepository)
 
 import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -18,72 +19,81 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserServiceTest {
     @Mock
     private UserRepository userRepository;
-    @InjectMocks UserService userService;
+    @InjectMocks
+    UserService userService;
 
     //---------------add user-----------------
     @Test
     void addUser_shouldThrow_whenNameIsNull() {
         assertThrows(IllegalArgumentException.class,
-                ()->userService.addUser(null, "r@gmail.com", 20));
+                () -> userService.addUser(null, "r@gmail.com", 20));
         verifyNoInteractions(userRepository);
 
     }
+
     @Test
     void addUser_shouldThrow_whenNameIsEmpty() {
         assertThrows(IllegalArgumentException.class,
-                ()->userService.addUser("", "r@gmail.com", 20));
+                () -> userService.addUser("", "r@gmail.com", 20));
         verifyNoInteractions(userRepository);
 
     }
+
     @Test
     void addUser_shouldThrow_whenEmailIsNull() {
         assertThrows(IllegalArgumentException.class,
-                ()->userService.addUser("Andrew", null, 20));
+                () -> userService.addUser("Andrew", null, 20));
         verifyNoInteractions(userRepository);
 
     }
+
     @Test
     void addUser_shouldThrow_whenEmailIsEmpty() {
         assertThrows(IllegalArgumentException.class,
-                ()->userService.addUser("Andrew", "", 20));
+                () -> userService.addUser("Andrew", "", 20));
         verifyNoInteractions(userRepository);
 
     }
+
     @Test
     void addUser_shouldThrow_whenAgeIsNegative() {
         assertThrows(IllegalArgumentException.class,
                 () -> userService.addUser("Alice", "a@b.com", -10));
         verifyNoInteractions(userRepository);
     }
+
     @Test
     void addUser_shouldThrow_whenAgeTooBig() {
         assertThrows(IllegalArgumentException.class,
                 () -> userService.addUser("Alice", "a@b.com", 151));
         verifyNoInteractions(userRepository);
     }
+
     @Test
-    void addUser_shouldSave_whenDataValid(){
-        userService.addUser("Mike", "mike135@gmai.com",30);
+    void addUser_shouldSave_whenDataValid() {
+        userService.addUser("Mike", "mike135@gmai.com", 30);
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).saveUser(captor.capture());
         User saved = captor.getValue();
-        assertEquals("Mike",saved.getName());
-        assertEquals("mike135@gmai.com",saved.getEmail());
-        assertEquals(30,saved.getAge());
+        assertEquals("Mike", saved.getName());
+        assertEquals("mike135@gmai.com", saved.getEmail());
+        assertEquals(30, saved.getAge());
     }
 
 
-//----------------------getUserById-------------------------------
+    //----------------------getUserById-------------------------------
     @Test
     void getUserById_shouldThrow_whenIdIsZero() {
-        assertThrows(IllegalArgumentException.class,()->userService.getUserById(0));
+        assertThrows(IllegalArgumentException.class, () -> userService.getUserById(0));
         verifyNoInteractions(userRepository);
     }
+
     @Test
     void getUserById_shouldThrow_whenIdIsNegative() {
         assertThrows(IllegalArgumentException.class, () -> userService.getUserById(-1));
         verifyNoInteractions(userRepository);
     }
+
     @Test
     void getUserById_shouldReturnUser_whenFound() {
         User user = new User("Alice", "alice@example.com", 30);
@@ -137,6 +147,7 @@ class UserServiceTest {
                 () -> userService.updateUser(1, "Alice", "a@b.com", 151));
         verifyNoInteractions(userRepository);
     }
+
     @Test
     void updateUser_shouldUpdateUser_whenDataValid() {
         User existing = new User("Old", "old@example.com", 20);
